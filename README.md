@@ -55,7 +55,7 @@ PORT=4000
 MONGO_URI=mongodb+srv://asela:TzJfLeUjVyBaclex@cluster0.9snvyq7.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
 
 ###########################################################################################################################################################################################
-# Currency Exchange Application - front 
+# Currency Exchange Application - frontend
 
 This is a React.js application that provides a user interface for currency conversion. It uses Material-UI for styling and Axios for making HTTP requests to the backend API.
 
