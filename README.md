@@ -16,7 +16,7 @@ This is an Express.js application for server side that provides API endpoints fo
 
 Make sure you have the following installed on your machine:
 
-- Node.js (version 18.x or higher)
+- Node.js (version 18.20 or higher)
 - npm (version 6.x or higher)
 - MongoDB (local or cloud instance)
 
@@ -74,7 +74,7 @@ This is a React.js application that provides a user interface for currency conve
 
 Make sure you have the following installed on your machine:
 
-- Node.js (version 18.x or higher)
+- Node.js (version 18.20 or higher)
 - npm (version 6.x or higher)
 
 ## Installation
