@@ -1,9 +1,12 @@
+require('dotenv').config();
 const express = require("express");
 var bodyParser = require("body-parser");
 const mongoose = require('mongoose');
 const cors = require('cors')
 const app = express();
-const port = 4000;
+// const port = 4000;
+const port = process.env.PORT || 3000; // Use the PORT from .env or default to 3000
+
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -14,8 +17,8 @@ routes.forEach(([name,handler]) => app.use(`/${name}`,handler));
 app.use(bodyParser.urlencoded({ extended: false }));
 
 
-const connectionURI = 'mongodb+srv://asela:TzJfLeUjVyBaclex@cluster0.9snvyq7.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
-
+// const connectionURI = 'mongodb+srv://asela:TzJfLeUjVyBaclex@cluster0.9snvyq7.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
+const connectionURI  = process.env.MONGO_URI
 mongoose.connect(connectionURI, {
     useNewUrlParser: true,
     useUnifiedTopology: true
