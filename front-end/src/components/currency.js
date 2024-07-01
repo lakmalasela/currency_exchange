@@ -1,7 +1,28 @@
 import React, { useEffect } from 'react';
 import { useState } from 'react';
-import { Container,TextField,MenuItem, Button,Typography, Snackbar, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TablePagination, Paper ,Grid,IconButton  } from '@material-ui/core';
-//import Alert from '@mui/material/Alert';
+import { 
+  Container,
+  TextField,
+  MenuItem, 
+  Button,
+  Typography,
+  Snackbar,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TablePagination,
+  Paper,
+  Grid,
+  IconButton,
+  SnackbarContent,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions
+} from '@material-ui/core';
 import { Delete as DeleteIcon } from '@material-ui/icons'; 
 import axios from 'axios';
 
@@ -20,18 +41,22 @@ const Currency = ()=>{
 
   const [selectFromCountryName, setselectFromCountryName] = useState("");
   const [selectToCountryName, setselectToCountryName] = useState("");
-  //const[country,setCountry] = useState('USD');
+  
   const[amount,setAmount] = useState('');
   const[result,setResult] = useState('');
   const [errors, setErrors] = useState({ fromCountry: false, toCountry: false, amount: false });
 
   //alert
   const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
   const [tableData, setTableData] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
   const [submitting, setSubmitting] = useState(false);
+
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [deleteItemId, setDeleteItemId] = useState(null);
 
 
   useEffect(() =>{
@@ -83,7 +108,7 @@ const Currency = ()=>{
   const handleToCountryChange = (event) => {
     setselectToCountry(event.target.value);
     const selecttocountry = event.target.value;
-    console.log("OUT ",event.target.value);
+    
 
     //set the country name
     const selectedCountry = tocountries.find(country => country.code === selecttocountry);
@@ -112,7 +137,7 @@ const Currency = ()=>{
       const rateTo = allrates[selectToCountry];
       const convertedAmount = amount * rateTo;
       setResult(`Converted Amount: ${convertedAmount.toFixed(2)} ${selectToCountry}`);
-      console.log("C NAME F ",selectFromCountryName);
+     
       try{
          
           console.log("C NAME T ",selectToCountryName);
@@ -130,7 +155,8 @@ const Currency = ()=>{
         setselectFromCountry("");
         setselectToCountry("");
         setAmount("");
-        // setOpenSnackbar(true);
+        setSnackbarMessage("Record successfully added!");
+        setOpenSnackbar(true); // Open Snackbar on successful submission
         setSubmitting(false); // Reset submitting state after completion
       }catch(error){
         console.log("Error saving transfer", error);
@@ -140,28 +166,10 @@ const Currency = ()=>{
     }
 
 
-    // if (selectFromCountry && selectToCountry && amount !== '') {
-    //   const rateTo = allrates[selectToCountry];
-
-    //   console.log("DDDDDD ",rateTo);
-    //   console.log("RRRRRRRR ",allrates);
-    //   //Calculate conversion
-    //   const convertedAmount = amount * rateTo;
-
-    //   // Display result
-    //   setResult(`Converted Amount: ${convertedAmount.toFixed(2)} ${selectToCountry}`);
-    // } else {
-    //   console.log("Please select currencies and enter amount.");
-    // }
 
   }
 
-  // const handleCloseSnackbar = (event, reason) => {
-  //   if (reason === 'clickaway') {
-  //     return;
-  //   }
-  //   setOpenSnackbar(false);
-  // };
+  
 
 
   //pagination
@@ -175,16 +183,52 @@ const Currency = ()=>{
   };
 
   //delete record
-  const handleDelete = async (id) => {
+  const confirmDelete = async () => {
     try {
-      await axios.delete(`${baseUrl}/transfer/${id}`);
-      const updatedData = tableData.filter(item => item._id !== id);
+      await axios.delete(`${baseUrl}/transfer/${deleteItemId}`);
+      const updatedData = tableData.filter(item => item._id !== deleteItemId);
       setTableData(updatedData);
+      setSnackbarMessage("Record successfully deleted!");
+      setOpenSnackbar(true);
     } catch (error) {
       console.log("Error deleting record", error);
+    } finally {
+      setDeleteDialogOpen(false);
+      setDeleteItemId(null);
     }
   };
 
+  
+  const handleCloseDeleteDialog = () => {
+    setDeleteDialogOpen(false);
+    setDeleteItemId(null);
+  };
+
+  const handleDelete = async (id) => {
+    setDeleteItemId(id);
+    setDeleteDialogOpen(true);
+  };
+
+  const handleCloseSnackbar = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setOpenSnackbar(false);
+  };
+
+  //currency set the amount
+  const formatAmount = (amount, countryName) => {
+    if (countryName === "Sri Lanka") {
+      return `${amount.toFixed(2)} LKR`;
+    } else if (countryName === "Australia") {
+      return `${amount.toFixed(2)} AUD`;
+    } else if(countryName === "USA"){
+      return `${amount.toFixed(2)} USD`;
+    }else if(countryName === "India"){
+      return `${amount.toFixed(2)} INR`;
+    }
+  };
+  
 
   return(
     <Container maxWidth="lg">
@@ -248,8 +292,8 @@ const Currency = ()=>{
       )}
         </Grid>
         <Grid item xs={6}>
-          
-      <TableContainer component={Paper} style={{ marginTop: '100px' }}>
+        <Typography style={{marginTop:'20px'}} variant='h4' gutterBottom>Transfer History</Typography>
+      <TableContainer component={Paper} style={{ marginTop: '60px' }}>
         <Table aria-label="simple table">
           <TableHead>
             <TableRow>
@@ -265,7 +309,10 @@ const Currency = ()=>{
               <TableRow key={row._id}>
                 <TableCell>{row.fromcountryname}</TableCell>
                 <TableCell>{row.tocountryname}</TableCell>
-                <TableCell>{row.amount && row.amount.toFixed(2)}</TableCell>
+                <TableCell>
+                  {/* {row.amount && row.amount.toFixed(2)} */}
+                  {row.amount && formatAmount(row.amount, row.tocountryname)}
+                  </TableCell>
 
                 <TableCell>
                       <IconButton onClick={() => handleDelete(row._id)} color="secondary">
@@ -294,12 +341,41 @@ const Currency = ()=>{
      
 
       {/* alert show */}
-      {/* <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={handleCloseSnackbar}>
-        <Alert onClose={handleCloseSnackbar} severity="success">
-          Record successfully added!
-        </Alert>
-      </Snackbar> */}
+      {/* Snackbar */}
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+      >
+        <SnackbarContent
+          style={{ backgroundColor: 'green' }}
+          message={snackbarMessage}
+        />
+      </Snackbar>
 
+
+       {/* Delete Confirmation Dialog */}
+       <Dialog
+        open={deleteDialogOpen}
+        onClose={handleCloseDeleteDialog}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{"Confirm Delete?"}</DialogTitle>
+        <DialogContent>
+          <Typography variant="body1">
+            Are you sure you want to delete this record?
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDeleteDialog} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={confirmDelete} color="secondary" autoFocus>
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
 
     </Container>
   )
