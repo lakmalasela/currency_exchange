@@ -7,8 +7,8 @@ import axios from 'axios';
 
 const Currency = ()=>{
 
-  const baseUrl = process.env.SERVER_API_URL;
-  const currencyexchange = process.env.EXCHANGE_RATE_API;
+  const baseUrl = process.env.REACT_APP_SERVER_API_URL;
+  const currencyExchange = process.env.REACT_APP_EXCHANGE_RATE_API;
 
 
   const[allrates,setRates] = useState({});
@@ -39,17 +39,17 @@ const Currency = ()=>{
       try{
       
         //get the rates initial
-        const responserates = await axios.get('currencyexchange/USD');
+        const responserates = await axios.get(`${currencyExchange}/USD`);
         setRates(responserates.data.rates);
       
 
-        const responsecountry = await axios.get('baseUrl/country');
+        const responsecountry = await axios.get(`${baseUrl}/country`);
         setfromCountries(responsecountry.data);
 
         settoCountries(responsecountry.data);
         
 
-        const response = await axios.get('baseUrl/transfer');
+        const response = await axios.get(`${baseUrl}/transfer`);
         setTableData(response.data);
         
       }catch(error){
@@ -57,7 +57,7 @@ const Currency = ()=>{
       }
     };
     fetchCountries();
-  },[tableData]);
+  },[tableData,baseUrl, currencyExchange]);
 
 
 
@@ -72,7 +72,7 @@ const Currency = ()=>{
     setselectFromCountryName(selectedCountry.countryname); 
 
     try {
-      const responserates = await axios.get(`currencyexchange/${selectedCountryCode}`);
+      const responserates = await axios.get(`${currencyExchange}/${selectedCountryCode}`);
       setRates(responserates.data.rates);
     } catch (error) {
       console.log(`Error fetching rates for ${selectedCountryCode}`, error);
@@ -117,7 +117,7 @@ const Currency = ()=>{
          
           console.log("C NAME T ",selectToCountryName);
           
-        const responsesavetransfer = await axios.post('baseUrl/transfer' ,{
+        const responsesavetransfer = await axios.post(`${baseUrl}/transfer` ,{
           fromcountryname:selectFromCountryName,
           tocountryname: selectToCountryName,
           amount: convertedAmount
@@ -177,7 +177,7 @@ const Currency = ()=>{
   //delete record
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`baseUrl/transfer/${id}`);
+      await axios.delete(`${baseUrl}/transfer/${id}`);
       const updatedData = tableData.filter(item => item._id !== id);
       setTableData(updatedData);
     } catch (error) {

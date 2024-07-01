@@ -9,7 +9,6 @@ router.post('/', async(req, res) => {
     try {
 
         const { fromcountryname,tocountryname, amount } = req.body;
-        console.log(fromcountryname,tocountryname, amount);
 
         const data = new Transfer(
             {
@@ -19,10 +18,6 @@ router.post('/', async(req, res) => {
           });
       
         await data.save();
-
-        console.log('req', req.body);
-        
-        
         res.sendStatus(200);
 
         
@@ -56,7 +51,7 @@ router.get("/",async(req, res) => {
 
     try {
 
-        const data = await Transfer.find();
+        const data = await Transfer.find().sort({_id:-1});
         res.status(200).json(data); 
 
     } catch (e) {
@@ -65,23 +60,5 @@ router.get("/",async(req, res) => {
 });
 
 
-// //update method
-// router.put("/:id", async(req, res) => {
-
-
-//     try {
-//         const {id} = req.params;
-//         const {name} = req.body;
-    
-
-//         await Category.updateOne({_id:id},{name,name});
-//         return  res.sendStatus(200); 
-
-
-
-//     } catch (error) {
-//         res.sendStatus(500);
-//     }
-// });
 
 module.exports = router;
