@@ -112,12 +112,6 @@ REACT_APP_SERVER_API_URL = http://localhost:4000
 
 REACT_APP_EXCHANGE_RATE_API = https://open.er-api.com/v6/latest
 
-## Build for Production
-
-To build the application for production, run:
-
-```bash
-npm run build
 
 
 
