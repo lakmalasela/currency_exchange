@@ -51,9 +51,10 @@ Make sure you have the following installed on your machine:
 
 Create a `.env` file in the root directory of the project with the following variables:
 
-PORT=4000
+PORT = 4000
 
-MONGO_URI=mongodb+srv://asela:TzJfLeUjVyBaclex@cluster0.9snvyq7.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+MONGO_URI =
+mongodb+srv://asela:TzJfLeUjVyBaclex@cluster0.9snvyq7.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
 
 ###########################################################################################################################################################################################
 # Currency Exchange Application - frontend
@@ -107,9 +108,9 @@ Make sure you have the following installed on your machine:
 
 Create a `.env` file in the root directory of the project with the following variables:
 
-SERVER_API_URL = http://localhost:4000
+REACT_APP_SERVER_API_URL = http://localhost:4000
 
-EXCHANGE_RATE_API = https://open.er-api.com/v6/latest
+REACT_APP_EXCHANGE_RATE_API = https://open.er-api.com/v6/latest
 
 ## Build for Production
 
