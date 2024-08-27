@@ -1,6 +1,6 @@
-# Currency Exchange Application - backend 
+# To-Do List - backend 
 
-This is an Express.js application for server side that provides API endpoints for currency conversion. It uses MongoDB for data storage 
+This is an Express.js application for server side that provides API endpoints for To-Do List. It uses MongoDB for data storage 
 
 ## Table of Contents
 
